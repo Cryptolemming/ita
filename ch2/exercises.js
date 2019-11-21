@@ -183,6 +183,7 @@ const insertionSortHelper = (A, l, r) => {
       A.splice(pos, 0, key)
       A.splice(i+1, 1);
     }
+
   }
 }
 
@@ -204,4 +205,58 @@ const mergeInsertion = (A, l, m, r) => {
   }
 }
 
-console.log(mergeInsertionSort([3,2,1,234,12,3,3,68,54,435,2], 2))
+// count inversions with mergesort
+const modifiedMergeSort = A => {
+  return A.length <= 1 ? 0 : modifiedMergeSortHelper(A, 0, A.length-1);
+}
+
+const modifiedMergeSortHelper = (A, p, q) => {
+  if (p >= q) { return 0; }
+
+  const mid = Math.floor((p+q)/2);
+  const leftInversions = modifiedMergeSortHelper(A, p, mid);
+  const rightInversions = modifiedMergeSortHelper(A, mid+1, q)
+  const totalInversions = modifiedMerge(A, p, mid, q) + leftInversions + rightInversions;
+  return totalInversions;
+}
+
+const modifiedMerge = (A, l, m, r) => {
+  let inversions = 0;
+  const L = A.slice(l, m+1);
+  const R = A.slice(m+1, r+1);
+  let Li = 0;
+  let Ri = 0;
+  const lenL = L.length;
+  const lenR = R.length;
+  let pos = l;
+  while (Li < lenL && Ri < lenR) {
+    if (L[Li] <= R[Ri]) {
+      A[pos] = L[Li];
+      Li++;
+    } else {
+      A[pos] = R[Ri];
+      Ri++;
+      inversions++;
+    }
+    pos++;
+  }
+
+  if (Ri < lenR) {
+    while (pos <= r) {
+      A[pos] = R[Ri];
+      pos++; Ri++;
+    }
+  }
+
+  if (Li < lenL) {
+    while (pos <= r) {
+      A[pos] = L[Li];
+      pos++; Li++;
+      inversions++;
+    }
+    inversions--;
+  }
+  return inversions;
+}
+
+console.log(modifiedMergeSort([3,2,1]))
