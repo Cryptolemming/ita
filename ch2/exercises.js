@@ -129,14 +129,10 @@ const insertSortBinarySearch = A => {
   for (let i = 1; i < A.length; i++) {
     const key = A[i];
     let j = i - 1;
-    console.log(i, j)
     if (j >= 0 && A[j] > key) {
       const posToInsert = binarySearch(A, 0, j, key);
-      console.log(key, posToInsert)
       A.splice(posToInsert, 0, key)
-      console.log(A)
       A.splice(i+1, 1);
-      console.log(A)
     }
   }
 
@@ -145,9 +141,9 @@ const insertSortBinarySearch = A => {
 
 const binarySearch = (A, l, r, key) => {
   const mid = Math.floor((l+r)/2);
-  console.log(mid)
   if (key < A[mid]) {
-    if (mid - 1 >= 0) {
+    // added mid - 1 >= l for mergeInertionSort binary search boundaries
+    if (mid - 1 >= 0 && mid - 1 >= l) {
       if (key > A[mid-1]) { return mid; }
       else { return binarySearch(A, l, mid-1, key); }
     }
@@ -159,4 +155,53 @@ const binarySearch = (A, l, r, key) => {
   }
 }
 
-console.log(insertSortBinarySearch([3,2,1,234,12,3,3,68,54,435,2]))
+const mergeInsertionSort = (A, k) => {
+  if (A.length <= 1) { return A; }
+  mergeInsertionSortHelper(A, k, 0, A.length-1)
+  return A;
+}
+
+const mergeInsertionSortHelper = (A, k, p, q) => {
+  if ((q-p+1) <= k) {
+    insertionSortHelper(A, p, q);
+    return;
+  }
+
+  const mid = Math.floor((p+q) / 2);
+  mergeInsertionSortHelper(A, k, p, mid)
+  mergeInsertionSortHelper(A, k,mid+1, q)
+  mergeInsertion(A, p, mid, q);
+}
+
+const insertionSortHelper = (A, l, r) => {
+  for (let i = l+1; i <= r; i++) {
+    const key = A[i];
+    let j = i - 1;
+    if (A[j] > key) {
+      console.log('here')
+      const pos = binarySearch(A, j, i, key)
+      A.splice(pos, 0, key)
+      A.splice(i+1, 1);
+    }
+  }
+}
+
+const mergeInsertion = (A, l, m, r) => {
+  const L = A.slice(l, m+1);
+  L.push(Number.MAX_SAFE_INTEGER)
+  const R = A.slice(m+1, r+1);
+  R.push(Number.MAX_SAFE_INTEGER);
+  let Li = 0;
+  let Ri = 0;
+  for (let i = l; i <= r; i++) {
+    if (L[Li] <= R[Ri]) {
+      A[i] = L[Li];
+      Li++;
+    } else {
+      A[i] = R[Ri];
+      Ri++;
+    }
+  }
+}
+
+console.log(mergeInsertionSort([3,2,1,234,12,3,3,68,54,435,2], 2))
