@@ -20,7 +20,6 @@ const maxSubArrayHelper = (A, low, high) => {
 }
 
 const maxContiguousSubArray = (A, l, r) => {
-  console.log(l, r)
   const { l: newLeft, r: newRight, maxSum } = A.reduce((acc, num, idx) => {
     acc.sum += num;
     if (acc.sum > acc.maxSum) {
