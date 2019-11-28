@@ -91,7 +91,6 @@ const maxCrossingSubArray = (A, l, m, r) => {
   return { l: maxLeft, r: maxRight, maxSum: leftSum + rightSum }
 }
 
-console.log('brute force:\n')
 let sample = 1;
 while (sample <= 20) {
   // brute force
